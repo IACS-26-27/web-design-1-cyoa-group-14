@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airport Adventure - Security Checkpoint</title>
+</head>
+<body>
+
+    <h1>Security Checkpoint</h1>
+    <p>You step up to the X-ray scanner with your boarding pass. The guard frowns as your bag goes through the machine and hits a red button. The belt stops.</p>
+
+    <h2>What do you do?</h2>
+    <ul>
+        <li>
+            <a href="explain.html">Politely ask what the issue is</a>
+        </li>
+        <li>
+            <a href="run.html">Grab your bag and make a run for Gate B4</a>
+        </li>
+    </ul>
+
+</body>
+</html>
