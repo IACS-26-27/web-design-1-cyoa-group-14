@@ -1,0 +1,244 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airport Adventure - Terminal Kiosk</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Orbitron', 'sans-serif'],
+                    },
+                    colors: {
+                        kioskGlitch: '#a855f7',
+                        kioskCyan: '#06b6d4',
+                        kioskAmber: '#f59e0b',
+                        terminalDark: '#0b0f19',
+                        terminalPanel: '#151c2e',
+                        terminalBorder: '#23304d',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes pulse-glitch {
+            0%, 100% { border-color: rgba(168, 85, 247, 0.5); box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); }
+            50% { border-color: rgba(6, 182, 212, 0.9); box-shadow: 0 0 25px rgba(6, 182, 212, 0.6); }
+        }
+        .glitch-border {
+            animation: pulse-glitch 2s infinite ease-in-out;
+        }
+        @keyframes subtle-flicker {
+            0%, 100% { opacity: 1; }
+            92% { opacity: 1; }
+            93% { opacity: 0.4; }
+            94% { opacity: 0.9; }
+            96% { opacity: 0.2; }
+            98% { opacity: 1; }
+        }
+        .flicker-text {
+            animation: subtle-flicker 4s infinite;
+        }
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(1000%); }
+        }
+        .scanline {
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(to bottom, transparent, rgba(6, 182, 212, 0.4), transparent);
+            animation: scanline 6s linear infinite;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-terminalDark text-slate-100 font-sans min-h-screen flex flex-col justify-between relative selection:bg-kioskGlitch selection:text-white">
+
+    <header class="border-b border-terminalBorder bg-slate-950/90 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <span class="inline-block w-3 h-3 rounded-full bg-cyan-400 animate-ping"></span>
+                <span class="font-display text-kioskCyan text-xs sm:text-sm tracking-widest uppercase font-extrabold">SELF-SERVICE KIOSK #07</span>
+            </div>
+            
+            <div class="flex items-center space-x-2 font-mono text-xs sm:text-sm bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg">
+                <span class="text-slate-400">FLIGHT 842:</span>
+                <span id="kiosk-status" class="text-kioskAmber font-bold">DEPARTING 11:45</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-4 py-8 flex-grow flex flex-col justify-center w-full">
+        
+        <!-- STATUS BANNER -->
+        <div class="glitch-border rounded-xl p-4 mb-6 border bg-slate-900/90 flex items-center justify-between shadow-lg">
+            <div class="flex items-center space-x-4">
+                <div class="text-3xl text-kioskGlitch animate-bounce">🖥️</div>
+                <div>
+                    <h2 class="font-display text-kioskCyan font-bold text-sm tracking-wide uppercase">KIOSK SYSTEM ERROR 404-X</h2>
+                    <p class="text-xs text-slate-300">Touchscreen displaying static interference. Passport optical sensor blinking erratically.</p>
+                </div>
+            </div>
+            <!-- Audio Toggle Button -->
+            <button onclick="toggleAudioSimulator()" id="sound-btn" class="bg-slate-900 hover:bg-slate-800 text-xs text-slate-300 px-3 py-2 rounded-lg border border-slate-700 flex items-center space-x-1.5 transition-colors">
+                <span>🔊</span>
+                <span id="sound-btn-text">SFX: ON</span>
+            </button>
+        </div>
+
+        <!-- MAIN NARRATIVE CARD -->
+        <div class="bg-terminalPanel border border-terminalBorder rounded-2xl p-6 sm:p-8 shadow-2xl relative mb-8 overflow-hidden">
+            <div class="scanline"></div>
+            
+            <div class="absolute -top-3 left-6 bg-terminalDark px-3 text-xs font-mono text-kioskCyan border border-terminalBorder rounded">
+                SCENE 01-B: TERMINAL KIOSK
+            </div>
+
+            <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-white mb-4 leading-tight tracking-wide flicker-text">
+                SYSTEM PROMPT: SELECT IDENTIFICATION METHOD
+            </h1>
+
+            <div class="space-y-4 text-slate-300 text-base sm:text-lg leading-relaxed">
+                <p>
+                    You step up to Kiosk #07. The monitor flickers, throwing purple and cyan light onto your face. A garbled message appears across the screen:
+                </p>
+                <div class="bg-slate-950/90 border-l-4 border-kioskGlitch p-4 rounded-r-lg my-3 space-y-2 font-mono">
+                    <p class="text-xs text-kioskGlitch uppercase font-semibold">Terminal Output:</p>
+                    <p class="text-cyan-300 text-sm sm:text-base font-semibold italic">
+                        "> WELCOME PASSENGER [NAME NOT FOUND]. PLEASE SELECT IDENTIFICATION METHOD TO RETRIEVE BOARDING PASS FOR FLIGHT 842."
+                    </p>
+                </div>
+                <p>
+                    A long line is starting to form behind you. An airline customer service agent is standing near the luggage drop counter a few yards away.
+                </p>
+            </div>
+        </div>
+
+        <!-- FEEDBACK NOTIFICATION AREA -->
+        <div id="feedback-box" class="hidden mb-6 p-4 rounded-xl border bg-slate-900 border-slate-700 text-slate-200 text-sm font-mono transition-all duration-300">
+            <div class="flex items-center space-x-2">
+                <span id="feedback-icon" class="text-kioskCyan">⚡</span>
+                <span id="feedback-text"></span>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <h2 class="font-display text-sm tracking-wider uppercase text-slate-400 font-bold mb-2">
+                Choose How To Proceed:
+            </h2>
+
+            <!-- Choice 1: Scan Passport -->
+            <button onclick="handleChoice('scan_passport.html', 'Aligning passport photo page under scanner lens...', '🛂')" 
+                    class="w-full text-left bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-kioskCyan rounded-xl p-4 sm:p-5 transition-all duration-200 group flex items-start space-x-4 shadow-md">
+                <div class="bg-slate-800 group-hover:bg-kioskCyan group-hover:text-black text-white p-3 rounded-lg transition-colors text-xl font-bold">
+                    🛂
+                </div>
+                <div class="flex-1">
+                    <div class="font-bold text-white group-hover:text-kioskCyan text-base sm:text-lg mb-1 flex items-center justify-between">
+                        <span>Scan Physical Passport</span>
+                        <span class="text-xs font-mono text-slate-500 group-hover:text-kioskCyan">Option 1</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-400">Slide your passport photo page under the glowing glass lens to let the system read your data.</p>
+                </div>
+            </button>
+
+            <!-- Choice 2: Manual Reference Entry -->
+            <button onclick="handleChoice('manual_entry.html', 'Opening virtual keyboard to type booking reference...', '⌨️')" 
+                    class="w-full text-left bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-kioskGlitch rounded-xl p-4 sm:p-5 transition-all duration-200 group flex items-start space-x-4 shadow-md">
+                <div class="bg-slate-800 group-hover:bg-kioskGlitch group-hover:text-white text-white p-3 rounded-lg transition-colors text-xl font-bold">
+                    ⌨️
+                </div>
+                <div class="flex-1">
+                    <div class="font-bold text-white group-hover:text-kioskGlitch text-base sm:text-lg mb-1 flex items-center justify-between">
+                        <span>Enter Booking Reference Manually</span>
+                        <span class="text-xs font-mono text-slate-500 group-hover:text-kioskGlitch">Option 2</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-400">Tap the touch screen and type in your 6-character booking code using the virtual keypad.</p>
+                </div>
+            </button>
+
+            <!-- Choice 3: Ask Agent -->
+            <button onclick="handleChoice('ask_agent.html', 'Stepping out of line to signal airline representative...', '👤')" 
+                    class="w-full text-left bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-kioskAmber rounded-xl p-4 sm:p-5 transition-all duration-200 group flex items-start space-x-4 shadow-md">
+                <div class="bg-slate-800 group-hover:bg-kioskAmber group-hover:text-black text-white p-3 rounded-lg transition-colors text-xl font-bold">
+                    👤
+                </div>
+                <div class="flex-1">
+                    <div class="font-bold text-white group-hover:text-kioskAmber text-base sm:text-lg mb-1 flex items-center justify-between">
+                        <span>Ask Customer Service Agent for Assistance</span>
+                        <span class="text-xs font-mono text-slate-500 group-hover:text-kioskAmber">Option 3</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-400">Give up on the glitching terminal and wave down the agent standing near the counter.</p>
+                </div>
+            </button>
+        </div>
+
+    </main>
+
+    <footer class="border-t border-terminalBorder bg-slate-950 py-4 px-4 mt-8">
+        <div class="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
+            <div>
+                <span>Airport Adventure Engine v1.0</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="checkin.html" class="hover:text-kioskCyan underline transition-colors">← Back to Check-In Selection</a>
+                <a href="index.html" class="hover:text-kioskAmber underline transition-colors">Restart Game</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let soundEnabled = true;
+
+        // Simulated Sound FX using Web Audio API
+        function playBeep(freq = 520, type = 'sine', duration = 0.12) {
+            if (!soundEnabled) return;
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, ctx.currentTime);
+                gain.gain.setValueAtTime(0.04, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + duration);
+            } catch (e) {
+                // Silent catch if audio context is restricted
+            }
+        }
+
+        function toggleAudioSimulator() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('sound-btn-text').textContent = soundEnabled ? "SFX: ON" : "SFX: OFF";
+            if (soundEnabled) playBeep(700, 'square', 0.1);
+        }
+
+        function handleChoice(targetFile, message, icon) {
+            playBeep(900, 'sawtooth', 0.15);
+            
+            const feedbackBox = document.getElementById('feedback-box');
+            const feedbackText = document.getElementById('feedback-text');
+            const feedbackIcon = document.getElementById('feedback-icon');
+            
+            feedbackIcon.textContent = icon;
+            feedbackText.textContent = message;
+            feedbackBox.classList.remove('hidden');
+
+            setTimeout(() => {
+                window.location.href = targetFile;
+            }, 800);
+        }
+    </script>
+</body>
+</html>
